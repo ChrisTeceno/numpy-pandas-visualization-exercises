@@ -47,6 +47,8 @@ fruits.value_counts()
 # Determine the string value that occurs most frequently in fruits.
 fruits.mode() #mode
 
+fruits.value_counts().nlargest(n=1, keep='all') #alternative
+
 a=fruits.value_counts() # order by unique values and their counts
 a.head(1) #first result of series sorted by count
 
@@ -147,3 +149,160 @@ def vowel_count(some_string):
         vowel_count += some_string.count(vowel)
     return vowel_count
 print(max(fruits, key=vowel_count))
+
+
+# Exercises Part III
+# Use pandas to create a Series named letters from the following string. 
+# The easiest way to make this string into a Pandas series is to use list 
+# to convert each individual letter into a single string on a basic Python list.
+
+
+letters =list('hnvidduckkqxwymbimkccexbkmqygkxoyndmcxnwqarhyffsjpsrabtjzsypmzadfavyrnndndvswreauxovncxtwzpwejilzjrmmbbgbyxvjtewqthafnbkqplarokkyydtubbmnexoypulzwfhqvckdpqtpoppzqrmcvhhpwgjwupgzhiofohawytlsiyecuproguy')
+type(letters)
+print(letters)
+letters = pd.Series(letters)
+type(letters)
+
+# Which letter occurs the most frequently in the letters Series?
+letters.mode
+letters.value_counts().nlargest(n=1,keep ='all')
+
+# Which letter occurs the Least frequently?
+letters.value_counts().nsmallest(n=1,keep ='all')
+
+# How many vowels are in the Series?
+letters.apply(vowel_count).sum()
+
+# How many consonants are in the Series?
+letters[~letters.isin(['a','e','i','o','u'])].count()
+
+# Create a Series that has all of the same letters but uppercased.
+upper_letters=letters.str.upper()
+print(upper_letters)
+
+# Create a bar plot of the frequencies of the 6 most commonly occuring 
+# letters.
+letters.value_counts().nlargest(n=6,keep ='all').plot()
+plt.tick_params(axis='x', colors='w')
+plt.tick_params(axis='y', colors='w')
+plt.xlim(0, 6)
+plt.ylim(6, 14)
+plt.show()
+
+# Use pandas to create a Series named numbers from the following list:
+
+
+num_series = pd.Series(['$796,459.41', '$278.60', '$482,571.67', '$4,503,915.98', '$2,121,418.3', '$1,260,813.3', '$87,231.01', '$1,509,175.45', '$4,138,548.00', '$2,848,913.80', '$594,715.39', '$4,789,988.17', '$4,513,644.5', '$3,191,059.97', '$1,758,712.24', '$4,338,283.54', '$4,738,303.38', '$2,791,759.67', '$769,681.94', '$452,650.23'])
+# What is the data type of the numbers Series?
+print(type(num_series))
+print(num_series)
+# How many elements are in the number Series?
+num_series.count()
+
+# Perform the necessary manipulations by accessing Series attributes 
+# and methods to convert the numbers Series to a numeric data type.
+def launder_the_cash(money):
+    return money.replace('$','').replace(',','')
+cash_as_float = num_series.apply(launder_the_cash).astype('float')
+print(cash_as_float)
+
+# Run the code to discover the maximum value from the Series.
+cash_as_float.max()
+
+
+# Run the code to discover the minimum value from the Series.
+cash_as_float.min()
+
+# What is the range of the values in the Series?
+cash_as_float.max()-cash_as_float.min()
+
+# Bin the data into 4 equally sized intervals or bins and output 
+# how many values fall into each bin.
+pd.cut(cash_as_float,4).value_counts()
+# (-4511.11, 1197705.993]       7
+# (3592560.778, 4789988.17]     6
+# (1197705.993, 2395133.385]    4
+# (2395133.385, 3592560.778]    3
+
+# Plot the binned data in a meaningful way. Be sure to include a title 
+# and axis labels.
+pd.cut(cash_as_float,4).value_counts().plot.bar(rot=0)
+font1 = {'family':'serif','color':'white','size':20}
+plt.title('Cash Bins',  fontdict= font1)
+plt.tick_params(axis='x', colors='w')
+plt.tick_params(axis='y', colors='w')
+#plt.xlim(0, 6)
+# plt.ylim(6, 14)
+plt.xlabel('Bins', c='w')
+plt.ylabel('Quantity', c='w')
+plt.xticks([0,1,2,3],['~$1m', '~$2m', '~$3m', '~$4m'])
+plt.show()
+
+# Use pandas to create a Series named exam_scores from the following list:
+
+
+exam_scores = pd.Series([60, 86, 75, 62, 93, 71, 60, 83, 95, 78, 65, 72, 69, 81, 96, 80, 85, 92, 82, 78])
+# How many elements are in the exam_scores Series?
+exam_scores.size
+exam_scores.count()
+
+# Run the code to discover the minimum, the maximum, the mean, 
+exam_scores.min()
+exam_scores.max()
+exam_scores.mean()
+# and the median scores for the exam_scores Series.
+exam_scores.median()
+
+# Plot the Series in a meaningful way and make sure your chart has a 
+# title and axis labels.
+exam_scores.plot()
+font1 = {'family':'serif','color':'white','size':20}
+plt.title('Exam Scores',  fontdict= font1)
+plt.tick_params(axis='x', colors='w')
+plt.tick_params(axis='y', colors='w')
+#plt.xlim(0, 6)
+# plt.ylim(6, 14)
+plt.xlabel('students', c='w')
+plt.ylabel('grades', c='w')
+#plt.xticks([0,1,2,3],['~$1m', '~$2m', '~$3m', '~$4m'])
+plt.show()
+# Write the code necessary to implement a curve for your exam_grades 
+# Series and save this as curved_grades. Add the necessary points to 
+# the highest grade to make it 100, and add the same number of points 
+# to every other score in the Series as well.
+scale = 100-exam_scores.max()
+curved_grades=exam_scores+scale
+
+# Use a method to convert each of the numeric values in the curved_grades
+# Series into a categorical value of letter grades. For example, 
+# 86 should be a 'B' and 95 should be an 'A'. Save this as a Series 
+# named letter_grades.
+def get_letter_grade(grade=90):
+    """take in int grade and return letter grade"""
+    # check conditions and return once met
+    if grade > 88:
+        return 'A'
+    elif grade > 79:
+        return 'B'
+    elif grade > 66:
+        return 'C'
+    elif grade > 59:
+        return 'D'
+    else:
+        return 'F'
+
+letter_grades = curved_grades.apply(get_letter_grade)
+print(letter_grades)
+
+# Plot your new categorical letter_grades Series in a meaninful way 
+# and include a title and axis labels.
+
+letter_grades.value_counts().plot.bar(rot=0)
+font1 = {'family':'serif','color':'white','size':20}
+plt.title('Curved Grades',  fontdict= font1)
+plt.tick_params(axis='x', colors='w')
+plt.tick_params(axis='y', colors='w')
+#plt.xlim(0, 6)
+# plt.ylim(6, 14)
+plt.xlabel('Grades', c='w')
+plt.ylabel('Students', c='w')
