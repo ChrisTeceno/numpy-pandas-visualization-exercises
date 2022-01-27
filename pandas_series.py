@@ -82,6 +82,7 @@ fruits.str.upper()
 
 # Count the letter "a" in all the string values (use string vectorization).
 fruits.str.count('a').sum()
+fruits.str.count('a')
 
 # Output the number of vowels in each and every string value.
 # def a fx to count vowels
