@@ -87,6 +87,8 @@ fruits.str.count('a')
 # Output the number of vowels in each and every string value.
 # def a fx to count vowels
 
+fruits.str.count('[aieou]') #best option
+
 def vowel_count(some_string):
     """function to count values"""
     vowel_count=0
@@ -102,21 +104,23 @@ def vowel_count2(some_string):
         vowel_count += some_string.lower().count(vowel)
     return vowel_count
 
-fruits.apply(vowel_count).sum()
-fruits.apply(vowel_count2).sum()
+fruits.apply(vowel_count)
+fruits.apply(vowel_count2)
 import timeit
 
 
 ###### I was curious about the two functions defined above
 %%timeit
-[fruits.apply(vowel_count2).sum()] 
-#2 20 µs ± 23.6 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+[fruits.apply(vowel_count2)] 
+#141 µs ± 2.78 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
 %%timeit
-{fruits.apply(vowel_count).sum()}
-# 227 µs ± 8.79 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+[fruits.apply(vowel_count)]
+#148 µs ± 4.01 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-
+%%timeit
+[fruits.str.count('[aieou]')]
+#137 µs ± 2.29 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
 # Write the code to get the longest string value from fruits.
 print(max(fruits, key=len))
