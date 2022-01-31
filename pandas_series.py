@@ -260,7 +260,7 @@ exam_scores.median()
 
 # Plot the Series in a meaningful way and make sure your chart has a 
 # title and axis labels.
-exam_scores.plot()
+exam_scores.plot.hist()
 font1 = {'family':'serif','color':'white','size':20}
 plt.title('Exam Scores',  fontdict= font1)
 plt.tick_params(axis='x', colors='w')
